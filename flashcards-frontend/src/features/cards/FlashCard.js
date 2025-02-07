@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Alert, Button, Card, Input } from 'antd';
+import AudioPlayer from '../audio/AudioPlayer';
 
 const FlashCard = ({
     termId,
@@ -7,6 +8,7 @@ const FlashCard = ({
     answer,
     inputGhostText,
     updateResultsHandler,
+    showAudioIcon,
 }) => {
     const [isCorrect, setIsCorrect] = useState(null);
     const [translation, setTranslation] = useState('');
@@ -38,6 +40,10 @@ const FlashCard = ({
             Submit
         </Button>,
     ];
+
+    if (showAudioIcon) {
+        cardActions.unshift(<AudioPlayer term={question} />);
+    }
 
     return (
         <>

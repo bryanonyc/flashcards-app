@@ -27,6 +27,7 @@ const FlashCardList = ({ data, sourceLang, updateResultsHandler }) => {
                                     answer={r.english.term}
                                     inputGhostText='English Translation'
                                     updateResultsHandler={handleResultsUpdate}
+                                    showAudioIcon={true}
                                 />
                             </div>
                         );
@@ -42,6 +43,7 @@ const FlashCardList = ({ data, sourceLang, updateResultsHandler }) => {
                                     answer={r.korean.term}
                                     inputGhostText='Korean Translation'
                                     updateResultsHandler={handleResultsUpdate}
+                                    showAudioIcon={false}
                                 />
                             </div>
                         );
