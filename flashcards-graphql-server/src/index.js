@@ -1,4 +1,5 @@
 // npm install @apollo/server express graphql cors
+import 'dotenv/config';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
@@ -8,6 +9,11 @@ import cors from 'cors';
 import { typeDefs } from './graphql/typeDefs/typedefs.js';
 import { resolvers } from './graphql/resolvers/resolvers.js';
 import { corsOptions } from './config/corsOptions.js';
+import cookieParser from 'cookie-parser';
+import authRouter from './routes/authRoutes.js';
+import { logger } from './middleware/logger.js';
+import { errorHandler } from './middleware/errorHandler.js';
+import rootRouter from './routes/root.js';
 
 // Required logic for integrating with Express
 const app = express();
@@ -22,14 +28,28 @@ const bootstrapServer = async () => {
     });
     await server.start();
 
+    app.use(logger);
+    app.use(cookieParser());
     app.use(cors(corsOptions));
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
-    app.use('/graphql', expressMiddleware(server));
 
-    // app.get("/", (req, res) => {
-    //     res.send("Hello World!");
-    // });
+    app.use('/', rootRouter);
+    app.use('/graphql', expressMiddleware(server));
+    app.use('/auth', authRouter);
+
+    app.all('*', (req, res) => {
+        res.status(404);
+        if (req.accepts('json')) {
+            res.json({ message: '404 Not Found' });
+        } else if (req.accepts('html')) {
+            res.sendFile(path.join(__dirname, 'views', '404.html'));
+        } else {
+            res.type('txt').send('404 Not Found');
+        }
+    });
+
+    app.use(errorHandler);
 
     app.listen(port, () => {
         console.log(`🚀 Express ready at http://localhost:${port}`);
