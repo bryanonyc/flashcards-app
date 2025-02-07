@@ -14,6 +14,7 @@ import authRouter from './routes/authRoutes.js';
 import { logger } from './middleware/logger.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import rootRouter from './routes/root.js';
+import ttsRouter from './routes/ttsRoutes.js';
 
 // Required logic for integrating with Express
 const app = express();
@@ -37,6 +38,7 @@ const bootstrapServer = async () => {
     app.use('/', rootRouter);
     app.use('/graphql', expressMiddleware(server));
     app.use('/auth', authRouter);
+    app.use('/tts-korean', ttsRouter);
 
     app.all('*', (req, res) => {
         res.status(404);
