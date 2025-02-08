@@ -62,6 +62,11 @@ export const handleLoginRequest = async (req, res) => {
                 isAdmin: user.isAdmin,
             };
 
+            console.log(
+                'Access token expires in ',
+                process.env.ACCESS_TOKEN_EXPIRES_IN
+            );
+
             const accessToken = jwt.sign(
                 userInfo,
                 process.env.ACCESS_TOKEN_SECRET,
@@ -75,6 +80,7 @@ export const handleLoginRequest = async (req, res) => {
             );
 
             // Create secure cookie with refresh token
+            console.log('Setting cookie with refresh token');
             res.cookie('jwt', refreshToken, {
                 httpOnly: true, // accessible only by web server
                 secure: true, // https
@@ -86,6 +92,8 @@ export const handleLoginRequest = async (req, res) => {
             res.status(200).json({
                 accessToken,
             });
+
+            console.log('---------- Login complete ----------');
         }
     } catch (error) {
         handleError(req, res, error);
@@ -96,6 +104,7 @@ export const handleLoginRequest = async (req, res) => {
 // @route GET /auth/refresh
 // @access Public - because access token has expired
 export const handleRefreshTokenRequest = (req, res) => {
+    console.log('Refreshing access token');
     const cookies = req.cookies;
 
     if (!cookies?.jwt) {
@@ -116,7 +125,7 @@ export const handleRefreshTokenRequest = (req, res) => {
                     if (err) {
                         return res.status(401).json({
                             message:
-                                'Your token has expired.  Please try logging in again.',
+                                'Your refresh token has expired.  Please try logging in again.',
                             isError: true,
                         });
                     }
@@ -139,6 +148,7 @@ export const handleRefreshTokenRequest = (req, res) => {
                             { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN }
                         );
 
+                        console.log('refresh complete');
                         // Send back the access token
                         res.status(200).json({
                             accessToken,
@@ -150,6 +160,7 @@ export const handleRefreshTokenRequest = (req, res) => {
             }
         );
     } catch (error) {
+        console.log('An error occurred during refresh request', error);
         handleError(req, res, error);
     }
 };
@@ -172,6 +183,7 @@ export const handleLogoutRequest = async (req, res) => {
         sameSite: 'none',
     });
 
+    console.log('---------- Logout complete ----------');
     res.status(200).json({
         message: 'Cookie cleared',
     });
