@@ -54,7 +54,7 @@ export const resolvers = {
             const { req, res } = context;
 
             try {
-                verifyJWT(req, res);
+                await verifyJWT(req, res);
 
                 const englishTerm = args.translationInput.englishTerm;
                 const koreanTerm = args.translationInput.koreanTerm;
@@ -99,7 +99,7 @@ export const resolvers = {
             const { req, res } = context;
 
             try {
-                verifyJWT(req, res);
+                await verifyJWT(req, res);
 
                 const englishId = Number(args.englishId);
                 console.log(englishId);
@@ -119,7 +119,7 @@ export const resolvers = {
             const { req, res } = context;
 
             try {
-                verifyJWT(req, res);
+                await verifyJWT(req, res);
 
                 const englishId = Number(args.englishId);
                 const term = args.term;
@@ -144,7 +144,7 @@ export const resolvers = {
             const { req, res } = context;
 
             try {
-                verifyJWT(req, res);
+                await verifyJWT(req, res);
 
                 const koreanId = Number(args.koreanId);
                 const term = args.term;
