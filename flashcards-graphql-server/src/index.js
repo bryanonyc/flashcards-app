@@ -36,7 +36,14 @@ const bootstrapServer = async () => {
     app.use(express.urlencoded({ extended: true }));
 
     app.use('/', rootRouter);
-    app.use('/graphql', expressMiddleware(server));
+    app.use(
+        '/graphql',
+        expressMiddleware(server, {
+            context: ({ req, res }) => {
+                return { req, res };
+            },
+        })
+    );
     app.use('/auth', authRouter);
     app.use('/tts-korean', ttsRouter);
 

@@ -8,9 +8,11 @@ export const verifyJWT = (req, res, next) => {
     const authHeader = req.headers.authorization || req.headers.Authorization;
 
     if (!authHeader?.startsWith('Bearer ')) {
-        return res.status(401).json({
-            message: 'Unauhorized. No token was provided with the request.',
-        });
+        const error = new Error(
+            'Unauthorized. No token was provided with the request.'
+        );
+        error.status = 401;
+        throw error;
     }
 
     const token = authHeader.split(' ')[1];
@@ -22,28 +24,30 @@ export const verifyJWT = (req, res, next) => {
                 try {
                     if (err) {
                         if (err instanceof TokenExpiredError) {
-                            return res.status(401).json({
-                                message: `Invalid token.  Token expired at ${err.expiredAt}`,
-                            });
+                            const error = new Error(
+                                `Invalid token.  Token expired at ${err.expiredAt}`
+                            );
+                            error.status = 401;
+                            throw error;
                         } else {
-                            return res.status(500).json({
-                                message: `Unknown error during token verification.`,
-                            });
+                            const error = new Error(
+                                'Unknown error during token verification'
+                            );
+                            error.status = 500;
+                            throw error;
                         }
                     }
 
                     // one last sanity check
                     const user = await findUser(decoded.username);
                     if (user === null) {
-                        res.status(403).json({
-                            message: 'No account found.',
-                            isError: true,
-                        });
+                        const error = new Error('No account found.');
+                        error.status = 403;
+                        throw error;
                     } else if (!user.isActive) {
-                        res.status(403).json({
-                            message: 'Your account is inactive.',
-                            isError: true,
-                        });
+                        const error = new Error('Your account is inactive.');
+                        error.status = 403;
+                        throw error;
                     } else {
                         next();
                     }
@@ -69,7 +73,9 @@ export const verifyJWT = (req, res, next) => {
             'errors.log'
         );
         if (error instanceof TokenExpiredError) {
-            return { message: error.message };
+            const error = new Error(`${error.message}`);
+            error.status = 500;
+            throw error;
         }
     }
 };

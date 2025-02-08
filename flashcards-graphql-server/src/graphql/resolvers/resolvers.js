@@ -1,6 +1,7 @@
-import { isNil } from 'ramda';
 import { prisma } from '../../db.js';
 import { shuffle } from '../../utils/Array.js';
+import { verifyJWT } from '../../middleware/verifyJWT.js';
+import { GraphQLError } from 'graphql';
 
 export const resolvers = {
     Query: {
@@ -49,84 +50,120 @@ export const resolvers = {
         },
     },
     Mutation: {
-        async createTranslation(_, args) {
-            const englishTerm = args.translationInput.englishTerm;
-            const koreanTerm = args.translationInput.koreanTerm;
-            return prisma.$transaction(async (tx) => {
-                const englishRecord = await tx.english.create({
+        async createTranslation(_, args, context) {
+            const { req, res } = context;
+
+            try {
+                verifyJWT(req, res);
+
+                const englishTerm = args.translationInput.englishTerm;
+                const koreanTerm = args.translationInput.koreanTerm;
+                return prisma.$transaction(async (tx) => {
+                    const englishRecord = await tx.english.create({
+                        data: {
+                            term: englishTerm,
+                        },
+                        select: {
+                            id: true,
+                            term: true,
+                        },
+                    });
+                    console.log(englishRecord);
+
+                    const koreanRecord = await tx.korean.create({
+                        data: {
+                            term: koreanTerm,
+                            english_id: englishRecord.id,
+                        },
+                        select: {
+                            id: true,
+                        },
+                    });
+
+                    await tx.english.update({
+                        where: {
+                            id: englishRecord.id,
+                        },
+                        data: {
+                            korean_id: koreanRecord.id,
+                        },
+                    });
+                    return englishRecord;
+                });
+            } catch (error) {
+                const message = `${error.status}: ${error.message}`;
+                throw new GraphQLError(message);
+            }
+        },
+        async deleteTranslation(_, args, context) {
+            const { req, res } = context;
+
+            try {
+                verifyJWT(req, res);
+
+                const englishId = Number(args.englishId);
+                console.log(englishId);
+                await prisma.english.delete({
+                    where: {
+                        id: englishId,
+                    },
+                });
+
+                return prisma.english.findMany();
+            } catch (error) {
+                const message = `${error.status}: ${error.message}`;
+                throw new GraphQLError(message);
+            }
+        },
+        async updateEnglish(_, args, context) {
+            const { req, res } = context;
+
+            try {
+                verifyJWT(req, res);
+
+                const englishId = Number(args.englishId);
+                const term = args.term;
+                return await prisma.english.update({
+                    where: {
+                        id: englishId,
+                    },
                     data: {
-                        term: englishTerm,
+                        term,
                     },
                     select: {
                         id: true,
                         term: true,
                     },
                 });
-                console.log(englishRecord);
+            } catch (error) {
+                const message = `${error.status}: ${error.message}`;
+                throw new GraphQLError(message);
+            }
+        },
+        async updateKorean(_, args, context) {
+            const { req, res } = context;
 
-                const koreanRecord = await tx.korean.create({
+            try {
+                verifyJWT(req, res);
+
+                const koreanId = Number(args.koreanId);
+                const term = args.term;
+                return await prisma.korean.update({
+                    where: {
+                        id: koreanId,
+                    },
                     data: {
-                        term: koreanTerm,
-                        english_id: englishRecord.id,
+                        term,
                     },
                     select: {
                         id: true,
+                        term: true,
                     },
                 });
-
-                await tx.english.update({
-                    where: {
-                        id: englishRecord.id,
-                    },
-                    data: {
-                        korean_id: koreanRecord.id,
-                    },
-                });
-                return englishRecord;
-            });
-        },
-        async deleteTranslation(_, args) {
-            const englishId = Number(args.englishId);
-            console.log(englishId);
-            await prisma.english.delete({
-                where: {
-                    id: englishId,
-                },
-            });
-
-            return prisma.english.findMany();
-        },
-        async updateEnglish(_, args) {
-            const englishId = Number(args.englishId);
-            const term = args.term;
-            return await prisma.english.update({
-                where: {
-                    id: englishId,
-                },
-                data: {
-                    term,
-                },
-                select: {
-                    id: true,
-                    term: true,
-                },
-            });
-        },
-        async updateKorean(_, args) {
-            const koreanId = Number(args.koreanId);
-            const term = args.term;
-            return await prisma.korean.update({
-                where: {
-                    id: koreanId,
-                },
-                data: {
-                    term,
-                },
-                select: {
-                    id: true,
-                    term: true,
-                },
-            });
+            } catch (error) {
+                const message = `${error.status}: ${error.message}`;
+                throw new GraphQLError(message);
+            }
         },
     },
 };
