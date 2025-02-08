@@ -11,7 +11,7 @@ const NewTranslationForm = ({ closeModalFn }) => {
 
     const [form] = Form.useForm();
 
-    const handleCancel = () => {
+    const resetAndCloseModal = () => {
         form.resetFields();
         closeModalFn();
     };
@@ -27,10 +27,10 @@ const NewTranslationForm = ({ closeModalFn }) => {
                 },
             });
 
-            form.resetFields();
-            closeModalFn();
+            resetAndCloseModal();
             antdMessage.success('Create was successful', 3);
         } catch (error) {
+            resetAndCloseModal();
             antdMessage.error(`Create Failed. ${error.message}`, 5);
         }
     };
@@ -59,7 +59,7 @@ const NewTranslationForm = ({ closeModalFn }) => {
                 <Button type='primary' htmlType='submit'>
                     Submit
                 </Button>
-                <Button onClick={handleCancel}>Cancel</Button>
+                <Button onClick={resetAndCloseModal}>Cancel</Button>
             </div>
         </Form>
     );
