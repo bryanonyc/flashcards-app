@@ -5,7 +5,7 @@ import { isNil } from 'ramda';
 
 const { TokenExpiredError } = jwt;
 
-export const verifyJWT = async (req, res, next) => {
+export const verifyJWT = async (req, res) => {
     const authHeader = req.headers.authorization || req.headers.Authorization;
     const token = authHeader?.split(' ')[1];
     if (
@@ -39,13 +39,13 @@ export const verifyJWT = async (req, res, next) => {
             const error = new Error('Your account is inactive.');
             error.status = 403;
             throw error;
-        } else {
-            next();
         }
+        console.log('JWT has been verified successfully');
     } catch (err) {
+        console.log('Error occured during validation of JWT', err);
         logEvents(
-            `${error.name}: \t
-            ${error.message}\t
+            `${err.name}: \t
+            ${err.message}\t
             ${req.method}\t
             ${req.url}\t
             ${req.headers.origin}`,
@@ -64,28 +64,5 @@ export const verifyJWT = async (req, res, next) => {
             error.status = 403;
             throw error;
         }
-    }
-};
-
-export const getUserInfoFromToken = async (req) => {
-    const authHeader = req.headers.authorization || req.headers.Authorization;
-    const token = authHeader.split(' ')[1];
-
-    try {
-        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-        const userInfo = {
-            username: decoded.username,
-            isAdmin: decoded.isAdmin,
-        };
-        return userInfo;
-    } catch (error) {
-        logEvents(
-            `${error.name}: \t
-            ${error.message}\t
-            ${req.method}\t
-            ${req.url}\t
-            ${req.headers.origin}`,
-            'errors.log'
-        );
     }
 };
