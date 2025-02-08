@@ -7,8 +7,7 @@ const { TokenExpiredError } = jwt;
 
 export const verifyJWT = async (req, res, next) => {
     const authHeader = req.headers.authorization || req.headers.Authorization;
-    const token = authHeader.split(' ')[1];
-
+    const token = authHeader?.split(' ')[1];
     if (
         isNil(token) ||
         token === 'null' ||
