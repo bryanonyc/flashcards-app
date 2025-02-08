@@ -6,6 +6,7 @@ export const UPDATE_ENGLISH_TERM = gql`
             id
             term
             korean {
+                id
                 english_id
                 term
             }
@@ -19,6 +20,7 @@ export const UPDATE_KOREAN_TERM = gql`
             id
             term
             english {
+                id
                 korean_id
                 term
             }
