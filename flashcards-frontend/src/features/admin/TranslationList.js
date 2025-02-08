@@ -126,9 +126,9 @@ const TranslationList = () => {
         })
         .sort((a, b) => b.id - a.id);
 
-    const handleDelete = (id) => {
+    const handleDelete = async (id) => {
         try {
-            deleteTranslation({
+            await deleteTranslation({
                 variables: {
                     englishId: id,
                 },
@@ -182,8 +182,7 @@ const TranslationList = () => {
         },
     ];
 
-    const handleSave = (row) => {
-        console.log('row', row);
+    const handleSave = async (row) => {
         const originalValue = row.originalValue;
         let updatedValue = row.term;
         if (row.columnKey === 'korean_term') {
@@ -193,14 +192,14 @@ const TranslationList = () => {
         if (originalValue !== updatedValue) {
             try {
                 if (row.columnKey === 'korean_term') {
-                    updateKorean({
+                    await updateKorean({
                         variables: {
                             koreanId: row.korean_id,
                             term: updatedValue,
                         },
                     });
                 } else {
-                    updateEnglish({
+                    await updateEnglish({
                         variables: {
                             englishId: row.id,
                             term: updatedValue,
