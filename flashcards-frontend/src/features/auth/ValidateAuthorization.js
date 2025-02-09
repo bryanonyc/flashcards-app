@@ -4,7 +4,7 @@ import { REFRESH_URL } from '../api/endpoints';
 import { FORBIDDEN_403 } from '../components/Results';
 import { Outlet } from 'react-router-dom';
 
-const PersistLogin = () => {
+const ValidateAuthorization = () => {
     const accessToken = getAccessToken();
     console.log('accessToken', accessToken);
     const effectRan = useRef(false);
@@ -54,4 +54,4 @@ const PersistLogin = () => {
     return <>{content}</>;
 };
 
-export default PersistLogin;
+export default ValidateAuthorization;

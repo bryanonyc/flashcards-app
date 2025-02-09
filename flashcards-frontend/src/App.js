@@ -6,7 +6,7 @@ import Welcome from './features/components/Welcome';
 import { NOT_FOUND_404 } from './features/components/Results';
 import TranslationList from './features/admin/TranslationList';
 import Login from './features/auth/Login';
-import PersistLogin from './features/auth/PersistLogin';
+import ValidateAuthorization from './features/auth/ValidateAuthorization';
 
 function App() {
     return (
@@ -30,7 +30,7 @@ function App() {
                     }
                 />
 
-                <Route element={<PersistLogin />}>
+                <Route element={<ValidateAuthorization />}>
                     <Route
                         path='/translations'
                         element={
