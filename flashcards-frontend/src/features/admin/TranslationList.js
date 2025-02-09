@@ -114,7 +114,7 @@ const TranslationList = () => {
     const [accessToken, setAccessToken] = useState(getAccessToken());
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const [createTranslation] = useMutation(
+    const [createTranslation, { loading: isCreateLoading }] = useMutation(
         CREATE_TRANSLATION,
         setContext([GET_ENGLISH_TERMS])
     );
@@ -250,7 +250,8 @@ const TranslationList = () => {
                         disabled={
                             isDeleteLoading ||
                             isEnglishUpdating ||
-                            isKoreanUpdating
+                            isKoreanUpdating ||
+                            isCreateLoading
                         }
                     >
                         Delete
@@ -328,7 +329,8 @@ const TranslationList = () => {
                             disabled={
                                 isDeleteLoading ||
                                 isEnglishUpdating ||
-                                isKoreanUpdating
+                                isKoreanUpdating ||
+                                isCreateLoading
                             }
                         >
                             New Translation
