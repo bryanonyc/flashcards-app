@@ -68,7 +68,6 @@ export const resolvers = {
                             term: true,
                         },
                     });
-                    console.log(englishRecord);
 
                     const koreanRecord = await tx.korean.create({
                         data: {
@@ -102,7 +101,6 @@ export const resolvers = {
                 await verifyJWT(req, res);
 
                 const englishId = Number(args.englishId);
-                console.log(englishId);
                 await prisma.english.delete({
                     where: {
                         id: englishId,
