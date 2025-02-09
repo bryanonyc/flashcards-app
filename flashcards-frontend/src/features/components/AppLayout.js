@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Flex, Layout } from 'antd';
+import AdminMenu from '../admin/AdminMenu';
 
 const { Content, Header, Footer } = Layout;
 
@@ -19,6 +20,7 @@ const AppLayout = (props) => {
                         <div className='app-title' onClick={gotoHome}>
                             Korean Flashcards (한국어 플래시 카드)
                         </div>
+                        <AdminMenu />
                     </Flex>
                 </Header>
                 <Content>

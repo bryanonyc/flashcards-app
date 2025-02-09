@@ -2,12 +2,22 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import {
+    ApolloClient,
+    InMemoryCache,
+    ApolloProvider,
+    HttpLink,
+} from '@apollo/client';
 import { App as AntdApp } from 'antd';
 import { GRAPHQL_API_URL } from './features/api/endpoints.js';
 
-const apolloClient = new ApolloClient({
+const httpLink = new HttpLink({
     uri: GRAPHQL_API_URL,
+    credentials: 'include', // Include credentials in requests
+});
+
+const apolloClient = new ApolloClient({
+    link: httpLink,
     cache: new InMemoryCache(),
 });
 

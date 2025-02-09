@@ -5,6 +5,8 @@ import AppLayout from './features/components/AppLayout';
 import Welcome from './features/components/Welcome';
 import { NOT_FOUND_404 } from './features/components/Results';
 import TranslationList from './features/admin/TranslationList';
+import Login from './features/auth/Login';
+import PersistLogin from './features/auth/PersistLogin';
 
 function App() {
     return (
@@ -28,14 +30,26 @@ function App() {
                     }
                 />
 
+                <Route element={<PersistLogin />}>
+                    <Route
+                        path='/translations'
+                        element={
+                            <AppLayout>
+                                <TranslationList />
+                            </AppLayout>
+                        }
+                    />
+                </Route>
+
                 <Route
-                    path='/translations'
+                    path='/login'
                     element={
                         <AppLayout>
-                            <TranslationList />
+                            <Login />
                         </AppLayout>
                     }
                 />
+
                 <Route path='*' element={<NOT_FOUND_404 />} />
             </Routes>
         </BrowserRouter>

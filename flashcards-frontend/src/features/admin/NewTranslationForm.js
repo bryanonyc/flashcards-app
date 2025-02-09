@@ -1,14 +1,6 @@
-import { App, Button, Form, Input } from 'antd';
-import { CREATE_TRANSLATION } from '../../graphql/mutations';
-import { useMutation } from '@apollo/client';
-import { GET_ENGLISH_TERMS } from '../../graphql/queries';
+import { Button, Form, Input } from 'antd';
 
-const NewTranslationForm = ({ closeModalFn }) => {
-    const { message: antdMessage } = App.useApp();
-    const [createTranslation] = useMutation(CREATE_TRANSLATION, {
-        refetchQueries: [GET_ENGLISH_TERMS],
-    });
-
+const NewTranslationForm = ({ closeModalFn, submitFn }) => {
     const [form] = Form.useForm();
 
     const resetAndCloseModal = () => {
@@ -17,22 +9,8 @@ const NewTranslationForm = ({ closeModalFn }) => {
     };
 
     const handleSubmit = async (values) => {
-        try {
-            await createTranslation({
-                variables: {
-                    translationInput: {
-                        englishTerm: values.english,
-                        koreanTerm: values.korean,
-                    },
-                },
-            });
-
-            resetAndCloseModal();
-            antdMessage.success('Create was successful', 3);
-        } catch (error) {
-            resetAndCloseModal();
-            antdMessage.error(`Create Failed. ${error.message}`, 5);
-        }
+        submitFn(values);
+        resetAndCloseModal();
     };
 
     return (

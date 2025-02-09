@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Space, Button } from 'antd';
+import { isNotNil } from 'ramda';
+import { useAuth } from '../hooks/useAuth';
 
 const Welcome = () => {
     const navigate = useNavigate();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const { username } = useAuth();
 
     const handleButtonClick = (sourceLanguage) => {
         navigate(`/cards?source=${sourceLanguage}`);
     };
+
+    useEffect(() => {
+        const loggedIn = isNotNil(username) && username !== '';
+        setIsLoggedIn(loggedIn);
+    }, [username]);
 
     return (
         <div className='center-content'>
@@ -29,6 +38,7 @@ const Welcome = () => {
                         Answer In 한국어
                     </Button>
                 </Space>
+                {isLoggedIn && <div>You're logged in as: {username}</div>}
             </div>
         </div>
     );

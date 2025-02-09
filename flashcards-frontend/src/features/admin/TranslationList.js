@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
+    Alert,
     App,
     Button,
     Form,
@@ -7,16 +9,24 @@ import {
     Modal,
     Popconfirm,
     Space,
+    Spin,
     Table,
 } from 'antd';
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_ENGLISH_TERMS } from '../../graphql/queries';
 import {
+    CREATE_TRANSLATION,
     DELETE_TRANSLATION,
     UPDATE_ENGLISH_TERM,
     UPDATE_KOREAN_TERM,
 } from '../../graphql/mutations';
 import NewTranslationForm from './NewTranslationForm';
+import {
+    getAccessToken,
+    refreshAccessToken,
+    removeAccessToken,
+    setContext,
+} from '../auth/auth';
 
 const EditableContext = React.createContext(null);
 const EditableRow = ({ index, ...props }) => {
@@ -97,27 +107,74 @@ const EditableCell = ({
     }
     return <td {...restProps}>{childNode}</td>;
 };
+
 const TranslationList = () => {
+    const navigate = useNavigate();
     const { message: antdMessage } = App.useApp();
+    const [accessToken, setAccessToken] = useState(getAccessToken());
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const [updateEnglish] = useMutation(UPDATE_ENGLISH_TERM);
+    const [createTranslation] = useMutation(
+        CREATE_TRANSLATION,
+        setContext([GET_ENGLISH_TERMS])
+    );
 
-    const [updateKorean] = useMutation(UPDATE_KOREAN_TERM);
+    const [updateEnglish] = useMutation(UPDATE_ENGLISH_TERM, setContext());
 
-    const [deleteTranslation] = useMutation(DELETE_TRANSLATION, {
-        refetchQueries: [GET_ENGLISH_TERMS],
-    });
+    const [updateKorean] = useMutation(UPDATE_KOREAN_TERM, setContext());
+
+    const [deleteTranslation] = useMutation(
+        DELETE_TRANSLATION,
+        setContext([GET_ENGLISH_TERMS])
+    );
 
     const { data, loading, error } = useQuery(GET_ENGLISH_TERMS);
 
     if (loading) {
-        return <div>Loading...</div>;
+        return (
+            <div className='center-content'>
+                <Spin />
+            </div>
+        );
     }
 
     if (error) {
-        return <div>Error: {error.message}</div>;
+        return (
+            <div className='center-content'>
+                <Alert
+                    message={`Error: ${error.message}`}
+                    type='error'
+                    showIcon
+                />
+            </div>
+        );
     }
+
+    const executeMutation = async (mutationFn, mutationVariables) => {
+        try {
+            await mutationFn(mutationVariables);
+            antdMessage.success('Operation was successful', 3);
+        } catch (error) {
+            let errorMessage = `Operation Failed. ${error.message}`;
+
+            if (error.message.includes('Token expired')) {
+                console.log('Token expired. Refreshing token and re trying.');
+                const isSuccess = await refreshAccessToken();
+                if (!isSuccess) {
+                    errorMessage =
+                        'Your refresh token expired. Please log in again.';
+                    removeAccessToken();
+                    navigate('/login');
+                } else {
+                    errorMessage =
+                        'Access token expired but was refreshed. Please resubmit your request.';
+                    setAccessToken(getAccessToken());
+                }
+            }
+
+            antdMessage.error(errorMessage, 5);
+        }
+    };
 
     // Transform data by adding a key property and then sort in descending order
     const sortedData = [...data.englishTerms]
@@ -127,16 +184,22 @@ const TranslationList = () => {
         .sort((a, b) => b.id - a.id);
 
     const handleDelete = async (id) => {
-        try {
-            await deleteTranslation({
-                variables: {
-                    englishId: id,
+        await executeMutation(deleteTranslation, {
+            variables: {
+                englishId: id,
+            },
+        });
+    };
+
+    const handleCreate = async (values) => {
+        await executeMutation(createTranslation, {
+            variables: {
+                translationInput: {
+                    englishTerm: values.english,
+                    koreanTerm: values.korean,
                 },
-            });
-            antdMessage.success('Delete was successful', 3);
-        } catch (error) {
-            antdMessage.error(`Delete Failed. ${error.message}`, 5);
-        }
+            },
+        });
     };
 
     const defaultColumns = [
@@ -190,25 +253,20 @@ const TranslationList = () => {
         }
 
         if (originalValue !== updatedValue) {
-            try {
-                if (row.columnKey === 'korean_term') {
-                    await updateKorean({
-                        variables: {
-                            koreanId: row.korean_id,
-                            term: updatedValue,
-                        },
-                    });
-                } else {
-                    await updateEnglish({
-                        variables: {
-                            englishId: row.id,
-                            term: updatedValue,
-                        },
-                    });
-                }
-                antdMessage.success('Update was successful', 3);
-            } catch (error) {
-                antdMessage.error(`Update Failed. ${error.message}`, 5);
+            if (row.columnKey === 'korean_term') {
+                await executeMutation(updateKorean, {
+                    variables: {
+                        koreanId: row.korean_id,
+                        term: updatedValue,
+                    },
+                });
+            } else {
+                await executeMutation(updateEnglish, {
+                    variables: {
+                        englishId: row.id,
+                        term: updatedValue,
+                    },
+                });
             }
         }
     };
@@ -243,6 +301,7 @@ const TranslationList = () => {
             cell: EditableCell,
         },
     };
+
     return (
         <div>
             {data && (
@@ -269,7 +328,10 @@ const TranslationList = () => {
                         open={isModalOpen}
                         footer={null}
                     >
-                        <NewTranslationForm closeModalFn={closeModal} />
+                        <NewTranslationForm
+                            closeModalFn={closeModal}
+                            submitFn={handleCreate}
+                        />
                     </Modal>
                 </>
             )}
