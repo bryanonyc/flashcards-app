@@ -43,7 +43,7 @@ const ValidateAuthorization = () => {
     if (isRefreshError) {
         //token: no
         content = (
-            <div className='login-container'>
+            <div className='center-content'>
                 <FORBIDDEN_403 />
             </div>
         );

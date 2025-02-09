@@ -14,7 +14,7 @@ const FlashCardList = ({ data, sourceLang, updateResultsHandler }) => {
                 infinite={false}
                 style={{
                     backgroundColor: 'darkgray',
-                    height: '500px',
+                    minHeight: '75vh',
                 }}
             >
                 {sourceLang === 'korean' &&

@@ -47,11 +47,11 @@ const FlashCard = ({
 
     return (
         <>
-            <div className='card-container'>
+            <div className='center-content'>
                 <Card
                     title={isCorrect !== null && <h2>{answer}</h2>}
                     actions={cardActions}
-                    style={{ width: 450 }}
+                    className='flashcard'
                 >
                     {isCorrect === true && (
                         <Alert message='Correct' type='success' showIcon />

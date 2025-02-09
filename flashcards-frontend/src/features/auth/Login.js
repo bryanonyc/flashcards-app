@@ -81,7 +81,7 @@ const Login = () => {
         </>
     );
 
-    return <div className='login-container'>{content}</div>;
+    return <div className='center-content'>{content}</div>;
 };
 
 export default Login;
