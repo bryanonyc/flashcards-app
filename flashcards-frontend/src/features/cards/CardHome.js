@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { Alert, Spin } from 'antd';
 import { useLazyQuery } from '@apollo/client';
 import { GET_ENGLISH_TERMS, GET_KOREAN_TERMS } from '../../graphql/queries';
 import FlashCardList from './FlashCardList';
@@ -39,13 +40,33 @@ const CardHome = () => {
     }
 
     if (enqlishQueryLoading || koreanQueryLoading) {
-        return <p>Loading...</p>;
+        return (
+            <div className='center-content'>
+                <Spin />
+            </div>
+        );
     }
 
     if (englishQueryError) {
-        return <p>Error: {englishQueryError.message}</p>;
+        return (
+            <div className='center-content'>
+                <Alert
+                    message={`Error: ${englishQueryError.message}`}
+                    type='error'
+                    showIcon
+                />
+            </div>
+        );
     } else if (koreanQueryError) {
-        return <p>Error: {koreanQueryError.message}</p>;
+        return (
+            <div className='center-content'>
+                <Alert
+                    message={`Error: ${koreanQueryError.message}`}
+                    type='error'
+                    showIcon
+                />
+            </div>
+        );
     }
 
     const handleUpdateResults = ({ isSuccess, termId }) => {
