@@ -119,11 +119,17 @@ const TranslationList = () => {
         setContext([GET_ENGLISH_TERMS])
     );
 
-    const [updateEnglish] = useMutation(UPDATE_ENGLISH_TERM, setContext());
+    const [updateEnglish, { loading: isEnglishUpdating }] = useMutation(
+        UPDATE_ENGLISH_TERM,
+        setContext()
+    );
 
-    const [updateKorean] = useMutation(UPDATE_KOREAN_TERM, setContext());
+    const [updateKorean, { loading: isKoreanUpdating }] = useMutation(
+        UPDATE_KOREAN_TERM,
+        setContext()
+    );
 
-    const [deleteTranslation] = useMutation(
+    const [deleteTranslation, { loading: isDeleteLoading }] = useMutation(
         DELETE_TRANSLATION,
         setContext([GET_ENGLISH_TERMS])
     );
@@ -239,7 +245,16 @@ const TranslationList = () => {
                     title='Confirm Delete'
                     onConfirm={() => handleDelete(record.id)}
                 >
-                    <Button type='link'>Delete</Button>
+                    <Button
+                        type='link'
+                        disabled={
+                            isDeleteLoading ||
+                            isEnglishUpdating ||
+                            isKoreanUpdating
+                        }
+                    >
+                        Delete
+                    </Button>
                 </Popconfirm>
             ),
         },
@@ -307,7 +322,15 @@ const TranslationList = () => {
             {data && (
                 <>
                     <Space direction='vertical'>
-                        <Button type='primary' onClick={showModal}>
+                        <Button
+                            type='primary'
+                            onClick={showModal}
+                            disabled={
+                                isDeleteLoading ||
+                                isEnglishUpdating ||
+                                isKoreanUpdating
+                            }
+                        >
                             New Translation
                         </Button>
                         <Table
