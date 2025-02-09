@@ -7,8 +7,11 @@ import { NOT_FOUND_404 } from './features/components/Results';
 import TranslationList from './features/admin/TranslationList';
 import Login from './features/auth/Login';
 import ValidateAuthorization from './features/auth/ValidateAuthorization';
+import { useTitle } from './features/hooks/useTitle';
 
 function App() {
+    useTitle('Korean Flashcards');
+
     return (
         <BrowserRouter>
             <Routes>
