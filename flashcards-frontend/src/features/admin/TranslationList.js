@@ -168,7 +168,6 @@ const TranslationList = () => {
             let errorMessage = `Operation Failed. ${error.message}`;
 
             if (error.message.includes('Token expired')) {
-                console.log('Token expired. Refreshing token and re trying.');
                 const isSuccess = await refreshAccessToken();
                 if (!isSuccess) {
                     errorMessage =

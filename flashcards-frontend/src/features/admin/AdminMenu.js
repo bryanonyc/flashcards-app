@@ -33,7 +33,6 @@ const AdminMenu = () => {
         });
 
         const result = await response.json();
-        console.log(result);
         setIsLoggedIn(false);
         removeAccessToken();
         navigate('/');
