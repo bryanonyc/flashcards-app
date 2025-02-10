@@ -21,7 +21,8 @@ const Welcome = () => {
     return (
         <div className='center-content'>
             <div className={'body-container'}>
-                <div>Study Korean with flashcards. Get started below.</div>
+                <div>Study Korean with flashcards.</div>
+                <div>Get started below.</div>
             </div>
             <div className={'home-button-container'}>
                 <Space>
@@ -38,7 +39,11 @@ const Welcome = () => {
                         Answer In 한국어
                     </Button>
                 </Space>
-                {isLoggedIn && <div>You're logged in as: {username}</div>}
+                {isLoggedIn && (
+                    <div className='logged-in-container'>
+                        You're logged in as: {username}
+                    </div>
+                )}
             </div>
         </div>
     );

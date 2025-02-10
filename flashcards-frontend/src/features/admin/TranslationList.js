@@ -222,7 +222,7 @@ const TranslationList = () => {
             editable: true,
             sorter: (a, b) => a.term.localeCompare(b.term),
             sortDirections: ['descend', 'ascend'],
-            width: '45%',
+            width: '250px',
         },
         {
             title: '',
@@ -235,11 +235,12 @@ const TranslationList = () => {
             dataIndex: ['korean', 'term'],
             key: 'korean_term',
             editable: true,
-            width: '45%',
+            width: '250px',
         },
         {
             title: <span className='column-header-cell'>Action</span>,
             dataIndex: 'action',
+            width: '100px',
             render: (_, record) => (
                 <Popconfirm
                     title='Confirm Delete'

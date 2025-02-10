@@ -50,6 +50,14 @@ body {
     white-space: pre-wrap;
 }
 
+.body-container {
+    display: flex;
+    flex-direction: column;
+    font-size: 16pt;
+    align-items: center;
+    justify-content: center;
+}
+
 .center-content {
     display: flex;
     flex-direction: column;
@@ -178,4 +186,8 @@ table td.ant-table-column-sort {
 
 .column-header-cell {
     padding: 5px 12px;
+}
+
+.logged-in-container {
+    padding-top: 1.5rem;
 }
