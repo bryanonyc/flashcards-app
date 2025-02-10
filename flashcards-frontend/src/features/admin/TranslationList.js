@@ -8,7 +8,6 @@ import {
     Input,
     Modal,
     Popconfirm,
-    Space,
     Spin,
     Table,
 } from 'antd';
@@ -97,7 +96,12 @@ const EditableCell = ({
                     },
                 ]}
             >
-                <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+                <Input
+                    size='small'
+                    ref={inputRef}
+                    onPressEnter={save}
+                    onBlur={save}
+                />
             </Form.Item>
         ) : (
             <div className='editable-cell-value-wrap' onClick={toggleEdit}>
@@ -111,7 +115,7 @@ const EditableCell = ({
 const TranslationList = () => {
     const navigate = useNavigate();
     const { message: antdMessage } = App.useApp();
-    const [accessToken, setAccessToken] = useState(getAccessToken());
+    const [_, setAccessToken] = useState(getAccessToken());
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [createTranslation, { loading: isCreateLoading }] = useMutation(
@@ -222,7 +226,6 @@ const TranslationList = () => {
             editable: true,
             sorter: (a, b) => a.term.localeCompare(b.term),
             sortDirections: ['descend', 'ascend'],
-            width: '250px',
         },
         {
             title: '',
@@ -235,12 +238,10 @@ const TranslationList = () => {
             dataIndex: ['korean', 'term'],
             key: 'korean_term',
             editable: true,
-            width: '250px',
         },
         {
             title: <span className='column-header-cell'>Action</span>,
             dataIndex: 'action',
-            width: '100px',
             render: (_, record) => (
                 <Popconfirm
                     title='Confirm Delete'
@@ -320,10 +321,10 @@ const TranslationList = () => {
     };
 
     return (
-        <div>
+        <>
             {data && (
                 <>
-                    <Space direction='vertical'>
+                    <div style={{ paddingBottom: 10 }}>
                         <Button
                             type='primary'
                             onClick={showModal}
@@ -336,19 +337,19 @@ const TranslationList = () => {
                         >
                             New Translation
                         </Button>
-                        <Table
-                            size='small'
-                            components={components}
-                            columns={columns}
-                            dataSource={sortedData}
-                            rowClassName={() => 'editable-row'}
-                            bordered
-                            scroll={{ y: 500 }}
-                            pagination={{
-                                showSizeChanger: true,
-                            }}
-                        />
-                    </Space>
+                    </div>
+                    <Table
+                        size='small'
+                        components={components}
+                        columns={columns}
+                        dataSource={sortedData}
+                        rowClassName={() => 'editable-row'}
+                        bordered
+                        scroll={{ y: 500 }}
+                        pagination={{
+                            showSizeChanger: true,
+                        }}
+                    />
                     <Modal
                         title='New Translation'
                         open={isModalOpen}
@@ -361,7 +362,7 @@ const TranslationList = () => {
                     </Modal>
                 </>
             )}
-        </div>
+        </>
     );
 };
 
