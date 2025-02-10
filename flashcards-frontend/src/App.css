@@ -186,6 +186,7 @@ body {
     z-index: 1;
     color: white;
     padding: 0 15px;
+    background-color: black;
 }
 
 .app-layout-footer {
