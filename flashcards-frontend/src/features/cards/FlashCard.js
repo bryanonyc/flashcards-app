@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Alert, Button, Card, Input } from 'antd';
 import AudioPlayer from '../audio/AudioPlayer';
+import StudyResults from '../components/StudyResults';
 
 const FlashCard = ({
     termId,
@@ -9,6 +10,9 @@ const FlashCard = ({
     inputGhostText,
     updateResultsHandler,
     showAudioIcon,
+    totalCards,
+    totalCorrect,
+    totalIncorrect,
 }) => {
     const [isCorrect, setIsCorrect] = useState(null);
     const [translation, setTranslation] = useState('');
@@ -47,7 +51,14 @@ const FlashCard = ({
 
     return (
         <>
-            <div className='center-content'>
+            <div className='study-results-container'>
+                <StudyResults
+                    total={totalCards}
+                    correct={totalCorrect}
+                    incorrect={totalIncorrect}
+                />
+            </div>
+            <div className='center-content-flashcard'>
                 <Card
                     title={isCorrect !== null && <h2>{answer}</h2>}
                     actions={cardActions}

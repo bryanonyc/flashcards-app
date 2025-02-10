@@ -1,22 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Carousel } from 'antd';
 import FlashCard from './FlashCard';
 
-const FlashCardList = ({ data, sourceLang, updateResultsHandler }) => {
-    const handleResultsUpdate = ({ isSuccess, termId }) => {
-        updateResultsHandler({ isSuccess, termId });
+const FlashCardList = ({ data, sourceLang }) => {
+    const [incorrectCardIds, setIncorrectCardIds] = useState([]);
+    const [correctCardIds, setCorrectCardIds] = useState([]);
+
+    const handleUpdateResults = ({ isSuccess, termId }) => {
+        isSuccess
+            ? setCorrectCardIds([...correctCardIds, termId])
+            : setIncorrectCardIds([...incorrectCardIds, termId]);
     };
 
     return (
         <div>
-            <Carousel
-                arrows
-                infinite={false}
-                style={{
-                    backgroundColor: 'darkgray',
-                    minHeight: '75vh',
-                }}
-            >
+            <Carousel arrows infinite={false} className='carousel'>
                 {sourceLang === 'korean' &&
                     data.koreanTerms.map((r) => {
                         return (
@@ -26,8 +24,11 @@ const FlashCardList = ({ data, sourceLang, updateResultsHandler }) => {
                                     question={r.term}
                                     answer={r.english.term}
                                     inputGhostText='English Translation'
-                                    updateResultsHandler={handleResultsUpdate}
+                                    updateResultsHandler={handleUpdateResults}
                                     showAudioIcon={true}
+                                    totalCards={data.koreanTerms.length}
+                                    totalCorrect={correctCardIds.length}
+                                    totalIncorrect={incorrectCardIds.length}
                                 />
                             </div>
                         );
@@ -42,8 +43,11 @@ const FlashCardList = ({ data, sourceLang, updateResultsHandler }) => {
                                     question={r.term}
                                     answer={r.korean.term}
                                     inputGhostText='Korean Translation'
-                                    updateResultsHandler={handleResultsUpdate}
+                                    updateResultsHandler={handleUpdateResults}
                                     showAudioIcon={false}
+                                    totalCards={data.englishTerms.length}
+                                    totalCorrect={correctCardIds.length}
+                                    totalIncorrect={incorrectCardIds.length}
                                 />
                             </div>
                         );

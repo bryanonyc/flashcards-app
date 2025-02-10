@@ -1,15 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { Alert, Spin } from 'antd';
 import { useLazyQuery } from '@apollo/client';
 import { GET_ENGLISH_TERMS, GET_KOREAN_TERMS } from '../../graphql/queries';
 import FlashCardList from './FlashCardList';
-import StudyResults from '../components/StudyResults';
 
 const CardHome = () => {
-    const [incorrectCardIds, setIncorrectCardIds] = useState([]);
-    const [correctCardIds, setCorrectCardIds] = useState([]);
-
     const [
         getEnglishCards,
         {
@@ -69,42 +65,22 @@ const CardHome = () => {
         );
     }
 
-    const handleUpdateResults = ({ isSuccess, termId }) => {
-        isSuccess
-            ? setCorrectCardIds([...correctCardIds, termId])
-            : setIncorrectCardIds([...incorrectCardIds, termId]);
-    };
-
     return (
         <>
             {sourceLang === 'korean' && koreanQueryData && (
                 <>
-                    <StudyResults
-                        correct={correctCardIds.length}
-                        incorrect={incorrectCardIds.length}
-                        total={koreanQueryData.koreanTerms.length}
-                    />
-
                     <FlashCardList
                         data={koreanQueryData}
                         sourceLang={sourceLang}
-                        updateResultsHandler={handleUpdateResults}
                     />
                 </>
             )}
 
             {sourceLang === 'english' && englishQueryData && (
                 <>
-                    <StudyResults
-                        correct={correctCardIds.length}
-                        incorrect={incorrectCardIds.length}
-                        total={englishQueryData.englishTerms.length}
-                    />
-
                     <FlashCardList
                         data={englishQueryData}
                         sourceLang={sourceLang}
-                        updateResultsHandler={handleUpdateResults}
                     />
                 </>
             )}

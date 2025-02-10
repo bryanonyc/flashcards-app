@@ -71,6 +71,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    max-height: 75vh;
 }
 
 .login-form {
@@ -88,7 +89,30 @@ body {
     gap: 1rem;
 }
 
+.center-content-flashcard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+}
+
 @media screen and (max-width: 600px) {
+    .app-layout-content-container {
+        padding: 0.5rem 1rem;
+        background: '#ccc';
+        border-radius: 0;
+    }
+
+    .app-layout {
+        min-height: 100vh;
+    }
+
+    .carousel {
+        background-color: darkgray;
+        min-height: 77vh;
+    }
+
     .app-title {
         font-size: 1.125rem;
         font-style: italic;
@@ -98,18 +122,45 @@ body {
         cursor: pointer;
     }
 
+    .study-results-container {
+        width: 300px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
     .flashcard {
         width: 300px;
     }
 }
 
 @media screen and (min-width: 600px) {
+    .app-layout-content-container {
+        padding: 0.5rem 1rem;
+        background: '#ccc';
+        border-radius: 0;
+    }
+
+    .app-layout {
+        min-height: 100vh;
+    }
+
+    .carousel {
+        background-color: darkgray;
+        min-height: 85vh;
+    }
+
     .app-title {
         font-size: 1.125rem;
         font-style: italic;
         font-weight: bold;
         color: white;
         cursor: pointer;
+    }
+
+    .study-results-container {
+        width: 450px;
+        padding-top: 10px;
+        padding-bottom: 10px;
     }
 
     .flashcard {
@@ -129,28 +180,12 @@ body {
     height: 100%;
 }
 
-.app-layout {
-    min-height: 100vh;
-}
-
 .app-layout-header {
     position: sticky;
     top: 0px;
     z-index: 1;
-    /* width: 100%; */
-    /* display: flex; */
-    /* align-items: center; */
-    /* justify-content: space-between; */
-    /* background: linear-gradient(45deg, black, white); */
-    background-color: black;
     color: white;
     padding: 0 15px;
-}
-
-.app-layout-content-container {
-    padding: 0.5rem 1rem;
-    background: '#ccc';
-    border-radius: 0;
 }
 
 .app-layout-footer {
