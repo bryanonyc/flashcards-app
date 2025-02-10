@@ -15,6 +15,11 @@ import { logger } from './middleware/logger.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import rootRouter from './routes/root.js';
 import ttsRouter from './routes/ttsRoutes.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Required logic for integrating with Express
 const app = express();
