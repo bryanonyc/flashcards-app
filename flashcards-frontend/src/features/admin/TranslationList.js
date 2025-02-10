@@ -115,7 +115,7 @@ const EditableCell = ({
 const TranslationList = () => {
     const navigate = useNavigate();
     const { message: antdMessage } = App.useApp();
-    const [_, setAccessToken] = useState(getAccessToken());
+    const [, setAccessToken] = useState(getAccessToken());
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [createTranslation, { loading: isCreateLoading }] = useMutation(
