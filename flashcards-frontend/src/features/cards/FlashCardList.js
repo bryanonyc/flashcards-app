@@ -10,6 +10,7 @@ const FlashCardList = ({ data, sourceLang }) => {
         isSuccess
             ? setCorrectCardIds([...correctCardIds, termId])
             : setIncorrectCardIds([...incorrectCardIds, termId]);
+        document.getElementsByClassName('center-carousel-content')[0].focus();
     };
 
     return (
