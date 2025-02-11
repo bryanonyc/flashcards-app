@@ -33,15 +33,14 @@ function App() {
                     }
                 />
 
-                <Route element={<ValidateAuthorization />}>
-                    <Route
-                        path='/translations'
-                        element={
-                            <AppLayout>
-                                <TranslationList />
-                            </AppLayout>
-                        }
-                    />
+                <Route
+                    element={
+                        <AppLayout>
+                            <ValidateAuthorization />
+                        </AppLayout>
+                    }
+                >
+                    <Route path='/translations' element={<TranslationList />} />
                 </Route>
 
                 <Route
@@ -53,7 +52,14 @@ function App() {
                     }
                 />
 
-                <Route path='*' element={<NOT_FOUND_404 />} />
+                <Route
+                    path='*'
+                    element={
+                        <AppLayout>
+                            <NOT_FOUND_404 />
+                        </AppLayout>
+                    }
+                />
             </Routes>
         </BrowserRouter>
     );
