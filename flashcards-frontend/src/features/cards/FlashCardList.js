@@ -15,7 +15,13 @@ const FlashCardList = ({ data, sourceLang }) => {
 
     return (
         <div>
-            <Carousel arrows infinite={false} className='carousel'>
+            <Carousel
+                arrows
+                infinite={false}
+                className='carousel'
+                fade={true}
+                speed={1000}
+            >
                 {sourceLang === 'korean' &&
                     data.koreanTerms.map((r) => {
                         return (
